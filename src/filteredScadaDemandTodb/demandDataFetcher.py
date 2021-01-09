@@ -101,7 +101,7 @@ def applyFilteringToDf(demandDf : pd.core.frame.DataFrame, entity:str)-> pd.core
         filteredDf = filterAction(demandDf,0,0,0,0)
    
     if entity == 'WRLDCMP.SCADA1.A0047000':
-        filteredDf = filterAction(demandDf, 100, 3, 32775, 63000)
+        filteredDf = filterAction(demandDf, 550, 3, 32775, 63000)
         
     return filteredDf
 
