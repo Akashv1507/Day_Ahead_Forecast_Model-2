@@ -54,5 +54,4 @@ class InterpolatedBlockWiseDemandInsRepo():
         finally:
             cur.close()
             connection.close()
-            print("interpolated blockwise demand data insertion complete")
         return isInsertionSuccess
