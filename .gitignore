@@ -2,7 +2,7 @@ venv/
 config.xlsx
 data_files/
 apiIndex.py
-scadaApiFetcher.py
+scadaApiFetcherDemo.py
 demo.bat
 demoBatch.py
 venv/
