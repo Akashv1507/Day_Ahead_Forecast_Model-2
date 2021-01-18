@@ -15,7 +15,7 @@ class DayAheadDemandForecastInsertion():
         """
         self.connString = con_string
     
-    def toListOfTuple(self,df:pd.core.frame.DataFrame) -> List[Tuple]:
+    def toListOfTuple(self,df:pd.core.frame.DataFrame) -> dict:
         """convert forecasted BLOCKWISE demand data to list of tuples[(timestamp,entityTag,forecastedValue),]
         Args:
             df (pd.core.frame.DataFrame): forecasted block wise demand dataframe
@@ -23,11 +23,15 @@ class DayAheadDemandForecastInsertion():
             List[Tuple]: list of tuple of forecasted blockwise demand data [(timestamp,entityTag,forecastedValue),]
         """ 
         forecastedData:List[Tuple] = []
-    
+        r0aForecastStore:List[Tuple]= []
+        data = {'forecastData':forecastedData, 'r0aForecastStore':r0aForecastStore}
+
         for ind in df.index:
             forecastedTuple = (str(df['timestamp'][ind]), df['entityTag'][ind], float(df['forecastedDemand'][ind]) )
             forecastedData.append(forecastedTuple)
-        return forecastedData
+            r0aForecastedStoreTuple = (str(df['timestamp'][ind]), df['entityTag'][ind],'R0A', float(df['forecastedDemand'][ind]) )
+            r0aForecastStore.append(r0aForecastedStoreTuple)
+        return data
 
     def insertDayAheadDemandForecast(self, daForecastDf:pd.core.frame.DataFrame) -> bool:
         """Insert blockwise DayAheadDemandForecast of entities to db
@@ -41,8 +45,10 @@ class DayAheadDemandForecastInsertion():
         #converting dataframe to list of tuples.
         data = self.toListOfTuple(daForecastDf)
         
+        
         # making list of tuple of timestamp(unique),entityTag based on which deletion takes place before insertion of duplicate
-        existingRows = [(x[0],x[1]) for x in data]
+        existingForecastRows = [(x[0],x[1]) for x in data['forecastData']]
+        existingR0aForecastRows = [(x[0],x[1],x[2]) for x in data['r0aForecastStore']]
 
         try:
             
@@ -57,10 +63,17 @@ class DayAheadDemandForecastInsertion():
                 cur = connection.cursor()
                 try:
                     cur.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS' ")
-                    del_sql = "DELETE FROM dfm2_dayahead_demand_forecast WHERE time_stamp = :1 and entity_tag=:2"
-                    cur.executemany(del_sql, existingRows)
+                    #inserting DA forecast
+                    del_sql_forecast = "DELETE FROM dfm2_dayahead_demand_forecast WHERE time_stamp = :1 and entity_tag=:2"
+                    cur.executemany(del_sql_forecast,existingForecastRows)
                     insert_sql = "INSERT INTO dfm2_dayahead_demand_forecast(time_stamp,ENTITY_TAG,forecasted_demand_value) VALUES(:1, :2, :3)"
-                    cur.executemany(insert_sql, data)
+                    cur.executemany(insert_sql, data['forecastData'])
+                    #storing DA forecast as r0A
+                    del_sql_r0a = "DELETE FROM dfm2_forecast_revision_store WHERE time_stamp = :1 and entity_tag=:2 and revision_no=:3"
+                    cur.executemany(del_sql_r0a, existingR0aForecastRows)
+                    insert_sql = "INSERT INTO dfm2_forecast_revision_store(time_stamp,ENTITY_TAG,revision_no, forecasted_demand_value) VALUES(:1, :2, :3, :4)"
+                    cur.executemany(insert_sql, data['r0aForecastStore'])
+
                 except Exception as e:
                     print("error while insertion/deletion->", e)
                     isInsertionSuccess = False
