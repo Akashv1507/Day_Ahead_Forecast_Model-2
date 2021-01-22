@@ -70,7 +70,9 @@ class DemandFetchForModelRepo():
                 dMinus14Df.rename(columns = {'DEMAND_VALUE':'dMinus14DemandValue'}, inplace = True)
                 dMinus21Df.rename(columns = {'DEMAND_VALUE':'dMinus21DemandValue'}, inplace = True) 
                 #concatenating d-2,d-7,d-9,d-14 demand value of particular entity horizontaly
-                demandConcatDf = pd.concat([dMinus2Df,dMinus7Df,dMinus14Df,dMinus21Df], axis=1)
+                # demandConcatDf = pd.concat([dMinus2Df,dMinus7Df,dMinus14Df,dMinus21Df], axis=1)
+                demandConcatDf = pd.concat([dMinus21Df,dMinus14Df,dMinus7Df,dMinus2Df], axis=1)
+
 
                 #generating timestamp column for date of forecast
                 dateOfForecast = currDateKey + dt.timedelta(days=1)

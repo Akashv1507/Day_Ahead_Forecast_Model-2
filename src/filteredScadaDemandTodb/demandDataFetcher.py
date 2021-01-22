@@ -63,7 +63,7 @@ def filterAction(demandDf :pd.core.frame.DataFrame, h1:int, h2:int, lowerBound:i
     
     # setting timestamp column to index
     demandDf.set_index('timestamp', inplace= True)
-
+    # demandDf.to_excel(r'D:\wrldc_projects\AI_based_demand_forecasting\pandasToExcel\before-filtering.xlsx')
     #filling hard filtered outliers using time interpolation
     demandDf['demandValue'] = demandDf['demandValue'].interpolate(method= "time").ffill().bfill()
     
@@ -77,6 +77,7 @@ def filterAction(demandDf :pd.core.frame.DataFrame, h1:int, h2:int, lowerBound:i
     #filling outliers with time interpolation
     # print(demandDf['demandValue'].isna().sum())
     demandDf['demandValue'] = demandDf['demandValue'].interpolate(method= "time").ffill().bfill()
+    # demandDf.to_excel(r'D:\wrldc_projects\AI_based_demand_forecasting\pandasToExcel\after-filtering.xlsx')
     demandDf.reset_index(inplace=True)
     return demandDf
     
@@ -157,10 +158,10 @@ def fetchDemandDataFromApi(currDate: dt.datetime, configDict: dict)-> List[Union
 
         #converting to minutewise data and adding entityName column to dataframe
         demandDf = toMinuteWiseData(demandDf,entity)
-        
+       
         #applying filtering logic
         filteredDf = applyFilteringToDf(demandDf,entity)
-
+        # filteredDf.to_excel(r'D:\wrldc_projects\demand_forecasting\filtering demo\filtered_Wr_dec_jan.xlsx')
         #converting to blockwise demand data and adding entityName column to dataframe
         blockwiseDf = toBlockWiseData(filteredDf,entity)
 
