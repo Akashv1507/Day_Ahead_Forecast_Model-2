@@ -19,22 +19,23 @@ class MlrPredictions():
         #Making dummy variables
         month = pd.Series(ts.index.month.astype(str), index=ts.index, name="month").apply(lambda x: "m{}".format(x)) #m1 -> January
         day = pd.Series(ts.index.dayofweek.astype(str), index=ts.index, name="day").apply(lambda x: "d{}".format(x)) #d0 -> Monday
-        hour = pd.Series(ts.index.strftime("%H:%M"), index=ts.index, name="hour")
-        dayhour = (day + "_" + hour).rename("dayhour")
+        timeblock = pd.Series(ts.index.strftime("%H:%M"), index=ts.index, name="timeblock")
+        daytimeblock = (day + "_" + timeblock).rename("daytimeblock")
         #Making dummy variables
         monthDummies = pd.get_dummies(month.sort_values()).sort_index()
         # dayDummies = pd.get_dummies(day.sort_values()).sort_index()
         # hourDummies = pd.get_dummies(hour.sort_values()).sort_index()
-        dayhourDummies = pd.get_dummies(dayhour.sort_values()).sort_index()
-        return monthDummies, dayhourDummies
+        daytimeblockDummies = pd.get_dummies(daytimeblock.sort_values()).sort_index()
+        return monthDummies, daytimeblockDummies
         
-    def modelPredictions(self, lagDemandDf, monthDummies, dayhourDummies):
+    def modelPredictions(self, lagDemandDf, monthDummies, daytimeblockDummies):
              
         prediction_obj = joblib.load(self.modelPathStr)
-        X_input = pd.concat([lagDemandDf,
-                            monthDummies.iloc[:,:-1],  #Exclude the last category
-                            dayhourDummies.iloc[:,:-1]   #Exclude the last category
+        X_input = pd.concat([monthDummies.iloc[:,:-1],  #Exclude the last category
+                            daytimeblockDummies.iloc[:,:-1],  #Exclude the last category
+                            lagDemandDf   
                             ], axis=1, join= "inner")
+        print(X_input)
         X_input_arr = X_input.values
         Y_pred = pd.Series(prediction_obj.predict(X_input_arr).flatten(), 
                         index= pd.DatetimeIndex(X_input.index) + pd.DateOffset(0), name= "Y_pred")
