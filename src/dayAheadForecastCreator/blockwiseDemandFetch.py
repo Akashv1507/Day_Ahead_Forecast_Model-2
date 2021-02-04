@@ -16,12 +16,14 @@ class DemandFetchForModelRepo():
          
          
 
-    def fetchBlockwiseDemandForModel(self, currDateKey: dt.datetime, entity:str) -> pd.core.frame.DataFrame:
+    def fetchBlockwiseDemandForModel(self, currDateKey: dt.datetime, entity:str, lagStart:int) -> pd.core.frame.DataFrame:
             """"fetch blockwise D-2, D-7, D-14, D-21 demand and return dataframe of it.
             Args:
                 self: object of class 
                 currDateKey (dt.datetime): start-date
                 entity(str): entity tag like 'WRLDCMP.SCADA1.A0047000'
+                lagStart: (Hyper-parameter) for tuning the number of lag variables included in model training 
+                        as well as model validation.
             Returns:
                 pd.core.frame.DataFrame: dataframe containing blockwise D-2, D-7, D-14, D-21 demand with index timestamp of 'D'
             """
@@ -126,6 +128,6 @@ class DemandFetchForModelRepo():
             finally:
                 cur.close()
                 connection.close()
-            return demandConcatDf
+            return demandConcatDf.iloc[:, lagStart:]
             
         

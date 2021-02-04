@@ -35,7 +35,7 @@ class MlrPredictions():
                             daytimeblockDummies.iloc[:,:-1],  #Exclude the last category
                             lagDemandDf   
                             ], axis=1, join= "inner")
-        print(X_input)
+        # print(X_input)
         X_input_arr = X_input.values
         Y_pred = pd.Series(prediction_obj.predict(X_input_arr).flatten(), 
                         index= pd.DatetimeIndex(X_input.index) + pd.DateOffset(0), name= "Y_pred")
