@@ -102,7 +102,7 @@ def applyFilteringToDf(demandDf : pd.core.frame.DataFrame, entity:str)-> pd.core
         filteredDf = filterAction(demandDf,550,5,5000,17000)
 
     if entity == 'WRLDCMP.SCADA1.A0046957' :                            #gujarat
-        filteredDf = filterAction(demandDf,550,5,7000,20000)
+        filteredDf = filterAction(demandDf,550,3,7000,20000)
 
     if entity == 'WRLDCMP.SCADA1.A0046980':                             #maharastra
         filteredDf = filterAction(demandDf,550,5,8000,27000)
@@ -151,8 +151,8 @@ def fetchDemandDataFromApi(currDate: dt.datetime, configDict: dict)-> List[Union
 
     #list of all entities
     # listOfEntity =['WRLDCMP.SCADA1.A0046945','WRLDCMP.SCADA1.A0046948','WRLDCMP.SCADA1.A0046953','WRLDCMP.SCADA1.A0046957','WRLDCMP.SCADA1.A0046962','WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980','WRLDCMP.SCADA1.A0047000']
-    listOfEntity =['WRLDCMP.SCADA1.A0047000', 'WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980']
-    # listOfEntity =[ 'WRLDCMP.SCADA1.A0046980']
+    listOfEntity =['WRLDCMP.SCADA1.A0047000', 'WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980', 'WRLDCMP.SCADA1.A0046957']
+    # listOfEntity =[ 'WRLDCMP.SCADA1.A0046957']
 
 
     
