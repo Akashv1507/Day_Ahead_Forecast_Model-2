@@ -21,8 +21,8 @@ def createDayAheadForecast(startDate:dt.datetime ,endDate: dt.datetime, configDi
     conString:str = configDict['con_string_mis_warehouse']
     modelPath:str = configDict['model_path']
     # listOfEntity =['WRLDCMP.SCADA1.A0046945','WRLDCMP.SCADA1.A0046948','WRLDCMP.SCADA1.A0046953','WRLDCMP.SCADA1.A0046957','WRLDCMP.SCADA1.A0046962','WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980','WRLDCMP.SCADA1.A0047000']
-    listOfEntity =['WRLDCMP.SCADA1.A0047000', 'WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980', 'WRLDCMP.SCADA1.A0046957']
-    # listOfEntity =['WRLDCMP.SCADA1.A0046957']
+    listOfEntity =['WRLDCMP.SCADA1.A0047000', 'WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980', 'WRLDCMP.SCADA1.A0046957', 'WRLDCMP.SCADA1.A0046945']
+    # listOfEntity =['WRLDCMP.SCADA1.A0046945']
 
     
     #creating instance of class
@@ -30,13 +30,13 @@ def createDayAheadForecast(startDate:dt.datetime ,endDate: dt.datetime, configDi
     obj_mlrPredictions = MlrPredictions(modelPath)
     obj_daDemandForecastInsertion = DayAheadDemandForecastInsertion(conString)
     
-    #intializing empty dataframe to store forecast of all entities
-    storeForecastDf = pd.DataFrame(columns = [ 'timestamp','entityTag','forecastedDemand']) 
     insertSuccessCount=0
     currDate = startDate
     
     # Iterating through each day and each entities , storing DA forecast in storeForecastDf anf psuhing into db 
     while currDate <= endDate:
+        #intializing empty dataframe to store forecast of all entities
+        storeForecastDf = pd.DataFrame(columns = [ 'timestamp','entityTag','forecastedDemand']) 
         for entity in listOfEntity:
             if entity =='WRLDCMP.SCADA1.A0047000':
                 lagDemandDf = obj_demandFetchForModelRepo.fetchBlockwiseDemandForModel(currDate, entity, lagStart=0)
@@ -45,6 +45,8 @@ def createDayAheadForecast(startDate:dt.datetime ,endDate: dt.datetime, configDi
             elif entity == 'WRLDCMP.SCADA1.A0046980':
                 lagDemandDf = obj_demandFetchForModelRepo.fetchBlockwiseDemandForModel(currDate, entity, lagStart=0)
             elif entity == 'WRLDCMP.SCADA1.A0046957':
+                lagDemandDf = obj_demandFetchForModelRepo.fetchBlockwiseDemandForModel(currDate, entity, lagStart=0)
+            elif entity == 'WRLDCMP.SCADA1.A0046945':
                 lagDemandDf = obj_demandFetchForModelRepo.fetchBlockwiseDemandForModel(currDate, entity, lagStart=0)
             predictedDaDf = obj_mlrPredictions.predictDaMlr(lagDemandDf, entity)
             # print(predictedDaDf)
