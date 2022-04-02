@@ -27,6 +27,7 @@ def insFilteredScadaDemand(startDate:dt.datetime ,endDate: dt.datetime, configDi
     # Iterating through each day and inserting filtered scada data 
     while currDate <= endDate:
         data:List[Union[dt.datetime, str, float]] = fetchDemandDataFromApi(currDate, configDict)
+        # print(data)
         isInsertionSuccess = obj_interpolatedBlockwiseDemandInsRepo.insertBlockWiseDemand(data)
         if isInsertionSuccess:
             insertSuccessCount = insertSuccessCount + 1

@@ -55,7 +55,7 @@ class MlrPredictions():
         #setting model path string(class variable) based on entity tag(means deciding which model ti use)
         self.modelPathStr = self.modelPath + '\\' + str(entity) +'.pkl'
 
-        ts = pd.date_range(start = pd.Timestamp("2021-01-01 00:00:00"), end = pd.Timestamp("2021-12-31 23:59:59"),
+        ts = pd.date_range(start = pd.Timestamp("2022-01-01 00:00:00"), end = pd.Timestamp("2022-12-31 23:59:59"),
                                freq ='15min').rename("time").to_frame()
         monthDummies, dayhourDummies = self.dummyVariableGenerator(ts)
 

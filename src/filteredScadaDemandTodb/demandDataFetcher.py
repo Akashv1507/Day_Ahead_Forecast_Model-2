@@ -153,8 +153,6 @@ def fetchDemandDataFromApi(currDate: dt.datetime, configDict: dict)-> List[Union
     # listOfEntity =['WRLDCMP.SCADA1.A0046945','WRLDCMP.SCADA1.A0046948','WRLDCMP.SCADA1.A0046953','WRLDCMP.SCADA1.A0046957','WRLDCMP.SCADA1.A0046962','WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980','WRLDCMP.SCADA1.A0047000']
     listOfEntity =['WRLDCMP.SCADA1.A0047000', 'WRLDCMP.SCADA1.A0046978','WRLDCMP.SCADA1.A0046980', 'WRLDCMP.SCADA1.A0046957', 'WRLDCMP.SCADA1.A0046945']
     # listOfEntity =[ 'WRLDCMP.SCADA1.A0046945']
-
-
     
     #creating object of ScadaApiFetcher class 
     obj_scadaApiFetcher = ScadaApiFetcher(tokenUrl, apiBaseUrl, clientId, clientSecret)
